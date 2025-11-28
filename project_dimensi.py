@@ -66,35 +66,39 @@ print("✔ dataset.yaml dibuat!")
 # ================= 4. TRAIN YOLO =====================
 # =====================================================
 
-print("\n=== TRAINING YOLOv8 ===")
-
-model = YOLO("yolov8n.yaml")   # model kosong
-
-train_result = model.train(
-    data=f"{dataset_path}/dataset.yaml",
-    imgsz=640,
-    epochs=20,
-    batch=16
-)
-
 best_model = "runs/detect/train/weights/best.pt"
-print("✔ Training selesai! Model terbaik:", best_model)
+
+if os.path.exists(best_model):
+    print(f"\n✔ Model sudah ada: {best_model}")
+    print("   Skip training. Hapus folder 'runs/' jika ingin training ulang.")
+else:
+    print("\n=== TRAINING YOLOv8 ===")
+    
+    model = YOLO("yolov8n.yaml")   # model kosong
+    
+    train_result = model.train(
+        data=f"{dataset_path}/dataset.yaml",
+        imgsz=640,
+        epochs=50,
+        batch=16
+    )
+    
+    print("✔ Training selesai! Model terbaik:", best_model)
 
 # =====================================================
-# =========== 5. AKURASI COCO VS CUSTOM ===============
+# =========== 5. VALIDASI MODEL CUSTOM ================
 # =====================================================
 
-print("\n=== MENGHITUNG AKURASI COCO MODEL ===")
-model_coco = YOLO("yolov8n.pt")
-res_coco = model_coco.val()
-
-print("\n=== MENGHITUNG AKURASI MODEL ANDA ===")
+print("\n=== MENGHITUNG AKURASI MODEL CUSTOM ===")
 model_custom = YOLO(best_model)
 res_custom = model_custom.val(data=f"{dataset_path}/dataset.yaml")
 
 print("\n=== HASIL AKURASI ===")
-print("Akurasi COCO (mAP50):", res_coco.box.map50)
-print("Akurasi CUSTOM (mAP50):", res_custom.box.map50)
+print("Akurasi MODEL CUSTOM (mAP50):", res_custom.box.map50)
+print("Akurasi MODEL CUSTOM (mAP50-95):", res_custom.box.map)
+
+# Note: Validasi COCO di-skip untuk menghindari download dataset COCO (beberapa GB)
+# Jika ingin membandingkan, jalankan: YOLO("yolov8n.pt").val(data="dataset/dataset.yaml")
 
 # =====================================================
 # ===== 6. MODE DETEKSI DIMENSI OBJEK (SESUAI PPT) ====

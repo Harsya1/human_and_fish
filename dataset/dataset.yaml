@@ -1,0 +1,6 @@
+
+train: E:\human_and_fish\dataset\images\train
+val: E:\human_and_fish\dataset\images\val
+
+nc: 1
+names: ["fish"]

@@ -61,6 +61,12 @@ coverage.xml
 *.pkl
 best_fish.pt
 
+# Training results and runs
+runs/
+
+# Dataset folders (auto-generated)
+dataset/
+
 # Output files
 output_*.csv
 

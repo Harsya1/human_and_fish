@@ -5,16 +5,22 @@ from datetime import datetime
 from ultralytics import YOLO
 
 # --- KONFIGURASI ---
-# Ganti dengan path model hasil training mandiri Anda
-MODEL_NAME = 'best_fish.pt' 
+# Menggunakan model hasil training dari project_dimensi.py
+MODEL_NAME = 'runs/detect/train/weights/best.pt' 
 CSV_FILE = 'output_deteksi_ikan.csv'
 CONFIDENCE_THRESHOLD = 0.5
 
 # Inisialisasi Model Custom
+if not os.path.exists(MODEL_NAME):
+    print(f'Error: Model {MODEL_NAME} tidak ditemukan.')
+    print('Jalankan project_dimensi.py terlebih dahulu untuk training model.')
+    exit()
+
 try:
     model = YOLO(MODEL_NAME)
-except:
-    print(f'Error: Model {MODEL_NAME} tidak ditemukan. Pastikan Anda sudah training data mandiri.')
+    print(f"✔ Model berhasil dimuat: {MODEL_NAME}")
+except Exception as e:
+    print(f'Error loading model: {e}')
     exit()
 
 # Siapkan File CSV
